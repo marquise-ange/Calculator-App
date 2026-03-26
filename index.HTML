@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #3a4764;
+      --keypad-bg: #232c43;
+      --screen-bg: #182034;
+      --key-top: #eae3dc;
+      --key-shadow: #b4a597;
+      --key-blue: #637097;
+      --key-blue-s: #404e72;
+      --key-red: #d03f2f;
+      --key-red-s: #93261a;
+      --text-dark: #444b5a;
+      --text-light: #ffffff;
+      --text-screen: #ffffff;
+    }
+
+    body.t2 {
+      --bg: #e6e6e6;
+      --keypad-bg: #d1cccc;
+      --screen-bg: #ededed;
+      --key-top: #e5e4e1;
+      --key-shadow: #a69d91;
+      --key-blue: #378187;
+      --key-blue-s: #1b5f65;
+      --key-red: #ca5502;
+      --key-red-s: #893901;
+      --text-dark: #35352c;
+      --text-screen: #35352c;
+    }
+
+    body.t3 {
+      --bg: #160628;
+      --keypad-bg: #1d0934;
+      --screen-bg: #1d0934;
+      --key-top: #341c4f;
+      --key-shadow: #871c9c;
+      --key-blue: #58077d;
+      --key-blue-s: #bc15f4;
+      --key-red: #00e0d1;
+      --key-red-s: #6cf9f2;
+      --text-dark: #ffe53d;
+      --text-screen: #ffe53d;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'League Spartan', sans-serif;
+      transition: background 0.3s;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 540px;
+      padding: 24px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 32px;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-light);
+      letter-spacing: 2px;
+    }
+
+    .theme-switcher {
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+    }
+
+    .theme-switcher>span {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--text-light);
+      text-transform: uppercase;
+      padding-bottom: 4px;
+    }
+
+    .theme-dots {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .theme-numbers {
+      display: flex;
+      gap: 18px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-light);
+    }
+
+    .toggle-track {
+      width: 72px;
+      height: 28px;
+      background: var(--keypad-bg);
+      border-radius: 14px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .toggle-thumb {
+      width: 20px;
+      height: 20px;
+      background: var(--key-red);
+      border-radius: 50%;
+      position: absolute;
+      top: 4px;
+      left: 6px;
+      transition: left 0.3s;
+    }
+
+    body.t2 .toggle-thumb {
+      left: 26px;
+    }
+
+    body.t3 .toggle-thumb {
+      left: 46px;
+    }
+
+    .screen {
+      background: var(--screen-bg);
+      border-radius: 12px;
+      padding: 28px 28px 20px;
+      margin-bottom: 24px;
+      min-height: 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: flex-end;
+    }
+
+    .expression {
+      font-size: 1rem;
+      color: var(--text-light);
+      opacity: 0.5;
+      min-height: 20px;
+      text-align: right;
+      word-break: break-all;
+    }
+
+    .display {
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: var(--text-screen);
+      word-break: break-all;
+      text-align: right;
+    }
+
+    .keypad {
+      background: var(--keypad-bg);
+      border-radius: 12px;
+      padding: 28px 24px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    button {
+      font-family: 'League Spartan', sans-serif;
+      font-weight: 700;
+      font-size: 1.75rem;
+      color: var(--text-dark);
+      background: var(--key-top);
+      border: none;
+      border-radius: 8px;
+      padding: 16px 8px 12px;
+      box-shadow: 0 4px 0 var(--key-shadow);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    button:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 var(--key-shadow);
+    }
+
+    button:hover {
+      filter: brightness(1.15);
+    }
+
+    .btn-blue {
+      background: var(--key-blue);
+      box-shadow: 0 4px 0 var(--key-blue-s);
+      color: var(--text-light);
+      font-size: 1.2rem;
+    }
+
+    .btn-red {
+      background: var(--key-red);
+      box-shadow: 0 4px 0 var(--key-red-s);
+      color: var(--text-light);
+      font-size: 1.5rem;
+    }
+
+    .span2 {
+      grid-column: span 2;
+    }
+
+    @media (max-width: 400px) {
+      .display {
+        font-size: 2.5rem;
+      }
+
+      button {
+        font-size: 1.4rem;
+        padding: 12px 6px 10px;
+      }
+
+      .keypad {
+        gap: 10px;
+        padding: 20px 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <header>
+      <h1>calc</h1>
+      <div class="theme-switcher">
+        <span>Theme</span>
+        <div class="theme-dots">
+          <div class="theme-numbers"><span>1</span><span>2</span><span>3</span></div>
+          <div class="toggle-track" id="toggleTrack">
+            <div class="toggle-thumb"></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="screen">
+      <div class="expression" id="expression"></div>
+      <div class="display" id="display">0</div>
+    </div>
+
+    <div class="keypad">
+      <button onclick="press('7')">7</button>
+      <button onclick="press('8')">8</button>
+      <button onclick="press('9')">9</button>
+      <button class="btn-blue" onclick="del()">DEL</button>
+
+      <button onclick="press('4')">4</button>
+      <button onclick="press('5')">5</button>
+      <button onclick="press('6')">6</button>
+      <button onclick="press('+')">+</button>
+
+      <button onclick="press('1')">1</button>
+      <button onclick="press('2')">2</button>
+      <button onclick="press('3')">3</button>
+      <button onclick="press('-')">-</button>
+
+      <button onclick="press('.')">.</button>
+      <button onclick="press('0')">0</button>
+      <button onclick="press('/')">÷</button>
+      <button onclick="press('*')">×</button>
+
+      <button class="btn-blue span2" onclick="reset()">RESET</button>
+      <button class="btn-red  span2" onclick="calculate()">=</button>
+    </div>
+  </div>
+
+  <script>
+    let current = '0';
+    let expression = '';
+    let justCalc = false;
+
+    const display = document.getElementById('display');
+    const exprEl = document.getElementById('expression');
+
+    function updateDisplay() {
+      let num = parseFloat(current);
+      if (!isNaN(num) && current !== '' && !current.endsWith('.')) {
+        display.textContent = num.toLocaleString('en-US');
+      } else {
+        display.textContent = current || '0';
+      }
+    }
+
+    function press(val) {
+      const operators = ['+', '-', '*', '/'];
+
+      if (justCalc) {
+        if (operators.includes(val)) {
+          expression = current + ' ' + val + ' ';
+          exprEl.textContent = expression;
+          justCalc = false;
+          return;
+        } else {
+          current = ''; expression = '';
+          exprEl.textContent = ''; justCalc = false;
+        }
+      }
+
+      if (operators.includes(val)) {
+        if (current !== '') {
+          expression += current + ' ' + val + ' ';
+          exprEl.textContent = expression;
+          current = '';
+        }
+      } else if (val === '.') {
+        if (!current.includes('.')) {
+          current = current === '' ? '0.' : current + '.';
+        }
+      } else {
+        current = (current === '0') ? val : current + val;
+      }
+
+      updateDisplay();
+    }
+
+    function del() {
+      if (justCalc) { reset(); return; }
+      current = current.slice(0, -1);
+      if (current === '' || current === '-') current = '0';
+      updateDisplay();
+    }
+
+    function reset() {
+      current = '0'; expression = '';
+      exprEl.textContent = ''; justCalc = false;
+      updateDisplay();
+    }
+
+    function calculate() {
+      if (expression === '') return;
+      try {
+        let full = expression + current;
+        exprEl.textContent = full + ' =';
+        if (/^[\d\s\+\-\*\/\.]+$/.test(full)) {
+          let result = Function('"use strict"; return (' + full + ')')();
+          result = Math.round(result * 1e10) / 1e10;
+          current = String(result);
+          expression = ''; justCalc = true;
+          updateDisplay();
+        }
+      } catch (e) {
+        display.textContent = 'Error';
+        current = '0'; expression = '';
+      }
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key >= '0' && e.key <= '9') press(e.key);
+      else if (e.key === '+') press('+');
+      else if (e.key === '-') press('-');
+      else if (e.key === '*') press('*');
+      else if (e.key === '/') { e.preventDefault(); press('/'); }
+      else if (e.key === '.') press('.');
+      else if (e.key === 'Enter' || e.key === '=') calculate();
+      else if (e.key === 'Backspace') del();
+      else if (e.key === 'Escape') reset();
+    });
+
+    const themes = ['', 't2', 't3'];
+    let themeIndex = 0;
+    document.getElementById('toggleTrack').addEventListener('click', function () {
+      themeIndex = (themeIndex + 1) % 3;
+      document.body.className = themes[themeIndex];
+    });
+  </script>
+
+</body>
+
+</html>
